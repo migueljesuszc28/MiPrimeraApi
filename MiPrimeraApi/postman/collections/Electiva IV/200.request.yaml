@@ -1,0 +1,16 @@
+$kind: http-request
+url: http://localhost:5289/api/estudiantes
+method: GET
+body:
+  type: json
+  content: "{\r
+
+    \  \"id\": 1,\r
+
+    \  \"nombre\": \"Ana Gómez de la Rosa\",\r
+
+    \  \"carrera\": \"Ingeniería de Sistemas y Computación\"\r
+
+    }"
+settings: {}
+order: 1000

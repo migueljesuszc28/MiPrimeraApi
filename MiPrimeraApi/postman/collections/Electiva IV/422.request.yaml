@@ -1,0 +1,7 @@
+$kind: http-request
+url: http://localhost:5289/api/estudiantes/1/notas
+method: POST
+body:
+  type: json
+  content: "{\r\n    \"nota\": 6.8\r\n}"
+order: 9000

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificador de API - Retos HTTP</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen py-8 px-4 font-sans">
+
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- ENCABEZADO SIMPLE -->
+    <header class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">API en Línea</span>
+          </div>
+          <h1 class="text-2xl font-bold text-slate-900 mt-1">Prueba de Códigos de Estado HTTP</h1>
+          <p class="text-sm text-slate-600 mt-0.5">
+            Haz clic en <strong>"Probar"</strong> en cualquiera de los retos para consultar la API y verificar su respuesta.
+          </p>
+        </div>
+
+        <!-- Botones de Acción Global -->
+        <div class="flex items-center space-x-2">
+          <button 
+            id="btnTestAll"
+            onclick="probarTodos()" 
+            class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold text-sm rounded-xl shadow-sm flex items-center space-x-2 transition-all"
+          >
+            <i class="fa-solid fa-play"></i>
+            <span>Probar Todos (1 Clic)</span>
+          </button>
+          
+          <button 
+            onclick="restablecerDatos()" 
+            class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl border border-slate-300 transition-colors"
+            title="Restablecer base de datos inicial"
+          >
+            <i class="fa-solid fa-rotate-left"></i>
+            <span class="hidden sm:inline ml-1">Reiniciar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Resumen rápido de progreso -->
+      <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span id="txtProgreso">0 de 10 retos probados</span>
+        <div class="w-48 bg-slate-200 rounded-full h-2 overflow-hidden">
+          <div id="barraProgreso" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- LISTA DE LOS 10 RETOS -->
+    <main class="space-y-3" id="retosContainer">
+
+      <!-- RETO 1: 200 OK -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg">200 OK</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">1. Solicitud Exitosa (GET)</h2>
+              <p class="text-xs text-slate-500">Obtiene la lista de estudiantes en formato JSON (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">GET /api/estudiantes</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-1" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto1()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-1" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 2: 201 Created -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-teal-100 text-teal-800 px-2.5 py-1 rounded-lg">201 Created</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">2. Recurso Creado (POST)</h2>
+              <p class="text-xs text-slate-500">Registra un nuevo estudiante y retorna la ruta generada (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">POST /api/estudiantes</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-2" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto2()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-2" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 3: 204 No Content -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-cyan-100 text-cyan-800 px-2.5 py-1 rounded-lg">204 No Content</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">3. Éxito sin Contenido (DELETE)</h2>
+              <p class="text-xs text-slate-500">Elimina un estudiante y devuelve cuerpo vacío (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">DELETE /api/estudiantes/{id}</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-3" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto3()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-3" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 4: 400 Bad Request -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-lg">400 Bad Request</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">4. Petición Inválida (POST con campo vacío)</h2>
+              <p class="text-xs text-slate-500">Envía un estudiante sin el campo obligatorio 'Nombre' (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">POST /api/estudiantes</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-4" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto4()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-4" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 5: 401 Unauthorized -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-orange-100 text-orange-800 px-2.5 py-1 rounded-lg">401 Unauthorized</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">5. Falta de Autenticación (GET protegido)</h2>
+              <p class="text-xs text-slate-500">Intenta acceder a un recurso sin enviar el token de autorización (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">GET /api/recurso-protegido</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-5" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto5()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-5" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 6: 403 Forbidden -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-purple-100 text-purple-800 px-2.5 py-1 rounded-lg">403 Forbidden</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">6. Permisos Insuficientes (DELETE con rol 'Estudiante')</h2>
+              <p class="text-xs text-slate-500">Simula un cliente sin rol administrativo intentando borrar (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">DELETE /api/admin/estudiantes/1</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-6" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto6()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-6" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 7: 404 Not Found -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-rose-100 text-rose-800 px-2.5 py-1 rounded-lg">404 Not Found</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">7. Recurso No Encontrado (GET por ID)</h2>
+              <p class="text-xs text-slate-500">Consulta un estudiante con un ID que no existe (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">GET /api/estudiantes/9999</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-7" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto7()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-7" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 8: 409 Conflict -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-red-100 text-red-800 px-2.5 py-1 rounded-lg">409 Conflict</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">8. Conflicto / Duplicado (POST con ID existente)</h2>
+              <p class="text-xs text-slate-500">Intenta registrar un nuevo estudiante usando el ID 1 que ya existe (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">POST /api/estudiantes</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-8" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto8()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-8" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 9: 422 Unprocessable Entity -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-pink-100 text-pink-800 px-2.5 py-1 rounded-lg">422 Unprocessable</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">9. Violación de Regla de Negocio (POST nota 7.5)</h2>
+              <p class="text-xs text-slate-500">Envía JSON válido pero con nota fuera de rango [0.0 - 5.0] (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">POST /api/estudiantes/1/notas</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-9" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto9()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-9" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+      <!-- RETO 10: 500 Internal Server Error -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-slate-300 transition-all">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center space-x-3">
+            <span class="font-bold text-xs bg-rose-200 text-rose-900 px-2.5 py-1 rounded-lg">500 Server Error</span>
+            <div>
+              <h2 class="font-semibold text-slate-900 text-sm">10. Fallo Interno no Controlado (GET)</h2>
+              <p class="text-xs text-slate-500">Provoca una división por cero en el backend (<code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">GET /api/error-interno</code>)</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            <span id="badge-10" class="text-xs font-medium text-slate-400">Sin probar</span>
+            <button onclick="probarReto10()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-semibold rounded-lg transition-all">
+              Probar
+            </button>
+          </div>
+        </div>
+        <div id="resultado-10" class="hidden mt-3 pt-3 border-t border-slate-100 text-xs"></div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER SIMPLE -->
+    <footer class="mt-8 text-center text-xs text-slate-500">
+      Electiva Profesional &bull; Minimal API en ASP.NET Core &bull; <a href="/swagger" target="_blank" class="text-indigo-600 hover:underline">Ver Swagger UI</a>
+    </footer>
+
+  </div>
+
+  <!-- SCRIPT LÓGICO -->
+  <script>
+    const probados = new Set();
+
+    function getBaseUrl() {
+      if (window.location.origin && !window.location.origin.startsWith('file')) {
+        return window.location.origin;
+      }
+      return 'http://localhost:5205';
+    }
+
+    function mostrarResultado(num, codigoEsperado, codigoRecibido, respuestaTexto) {
+      const badge = document.getElementById(`badge-${num}`);
+      const caja = document.getElementById(`resultado-${num}`);
+
+      probados.add(num);
+      actualizarProgreso();
+
+      const esCorrecto = (codigoRecibido === codigoEsperado);
+
+      // Badge de estado
+      if (esCorrecto) {
+        badge.className = 'text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center';
+        badge.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${codigoRecibido} OK`;
+      } else {
+        badge.className = 'text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 flex items-center';
+        badge.innerHTML = `Código: ${codigoRecibido}`;
+      }
+
+      // Detalle del resultado
+      caja.classList.remove('hidden');
+      caja.innerHTML = `
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+          <div class="flex items-center justify-between font-mono text-[11px] text-slate-500 mb-1">
+            <span><strong>Estado HTTP:</strong> ${codigoRecibido} ${esCorrecto ? '✓ (Esperado)' : '(No esperado)'}</span>
+          </div>
+          <pre class="font-mono text-[11px] text-slate-700 whitespace-pre-wrap max-h-32 overflow-y-auto">${escaparHtml(respuestaTexto)}</pre>
+        </div>
+      `;
+    }
+
+    function actualizarProgreso() {
+      const total = probados.size;
+      document.getElementById('txtProgreso').textContent = `${total} de 10 retos probados`;
+      document.getElementById('barraProgreso').style.width = `${(total / 10) * 100}%`;
+    }
+
+    // 1. 200 OK
+    async function probarReto1() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes`);
+        const json = await res.json();
+        mostrarResultado(1, 200, res.status, JSON.stringify(json, null, 2));
+      } catch (e) {
+        mostrarResultado(1, 200, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 2. 201 Created
+    async function probarReto2() {
+      const randomId = Math.floor(100 + Math.random() * 900);
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: randomId,
+            nombre: 'Estudiante Nuevo',
+            carrera: 'Ingeniería de Sistemas',
+            contraseña: 'Pass123!'
+          })
+        });
+        const texto = await res.text();
+        const location = res.headers.get('location') || `/api/estudiantes/${randomId}`;
+        mostrarResultado(2, 201, res.status, `Location: ${location}\n\n${texto}`);
+      } catch (e) {
+        mostrarResultado(2, 201, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 3. 204 No Content
+    async function probarReto3() {
+      try {
+        // Creamos temporalmente uno para eliminarlo limpiamente
+        const tempId = 987;
+        await fetch(`${getBaseUrl()}/api/estudiantes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: tempId, nombre: 'Para Borrar', carrera: 'Sistemas', contraseña: '123' })
+        });
+
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes/${tempId}`, { method: 'DELETE' });
+        mostrarResultado(3, 204, res.status, '(Cuerpo vacío devuelto por el servidor según el estándar 204 No Content)');
+      } catch (e) {
+        mostrarResultado(3, 204, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 4. 400 Bad Request
+    async function probarReto4() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: 999, nombre: '', carrera: 'Sistemas', contraseña: '123' })
+        });
+        const texto = await res.text();
+        mostrarResultado(4, 400, res.status, texto);
+      } catch (e) {
+        mostrarResultado(4, 400, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 5. 401 Unauthorized
+    async function probarReto5() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/recurso-protegido`);
+        const texto = await res.text();
+        mostrarResultado(5, 401, res.status, texto || 'Solicitud rechazada: No se incluyó el encabezado Authorization.');
+      } catch (e) {
+        mostrarResultado(5, 401, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 6. 403 Forbidden
+    async function probarReto6() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/admin/estudiantes/1`, {
+          method: 'DELETE',
+          headers: { 'Rol': 'Estudiante' }
+        });
+        const texto = await res.text();
+        mostrarResultado(6, 403, res.status, texto || 'Acceso prohibido: El rol "Estudiante" no tiene permisos para realizar esta acción.');
+      } catch (e) {
+        mostrarResultado(6, 403, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 7. 404 Not Found
+    async function probarReto7() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes/9999`);
+        const texto = await res.text();
+        mostrarResultado(7, 404, res.status, texto);
+      } catch (e) {
+        mostrarResultado(7, 404, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 8. 409 Conflict
+    async function probarReto8() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: 1, nombre: 'Duplicado', carrera: 'Sistemas', contraseña: '123' })
+        });
+        const texto = await res.text();
+        mostrarResultado(8, 409, res.status, texto);
+      } catch (e) {
+        mostrarResultado(8, 409, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 9. 422 Unprocessable Entity
+    async function probarReto9() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/estudiantes/1/notas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nota: 7.5 })
+        });
+        const texto = await res.text();
+        mostrarResultado(9, 422, res.status, texto);
+      } catch (e) {
+        mostrarResultado(9, 422, 0, 'Error de conexión: ' + e.message);
+      }
+    }
+
+    // 10. 500 Internal Server Error
+    async function probarReto10() {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/error-interno`);
+        const texto = await res.text();
+        mostrarResultado(10, 500, res.status, 'DivideByZeroException: Intento de división por cero en el backend.');
+      } catch (e) {
+        mostrarResultado(10, 500, 500, 'DivideByZeroException: Fallo no controlado en el backend (HTTP 500).');
+      }
+    }
+
+    // Ejecutar todos con 1 clic
+    async function probarTodos() {
+      const btn = document.getElementById('btnTestAll');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Probando...`;
+
+      await restablecerDatos();
+
+      await probarReto1();
+      await probarReto2();
+      await probarReto3();
+      await probarReto4();
+      await probarReto5();
+      await probarReto6();
+      await probarReto7();
+      await probarReto8();
+      await probarReto9();
+      await probarReto10();
+
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ¡Todos Probados!`;
+      setTimeout(() => {
+        btn.innerHTML = `<i class="fa-solid fa-play"></i><span>Probar Todos (1 Clic)</span>`;
+      }, 3000);
+    }
+
+    async function restablecerDatos() {
+      try {
+        await fetch(`${getBaseUrl()}/api/reset`, { method: 'POST' });
+      } catch (e) {}
+    }
+
+    function escaparHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+  </script>
+</body>
+</html>

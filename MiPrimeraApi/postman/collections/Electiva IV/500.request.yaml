@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:5289/api/error-interno
+method: GET
+order: 10000

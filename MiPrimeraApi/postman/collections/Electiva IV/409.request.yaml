@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:5289/api/estudiantes
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"id\": 1, \r
+
+    \    \"nombre\": \"Estudiante Duplicado\",\r
+
+    \    \"carrera\": \"Ingeniería\",\r
+
+    \    \"contraseña\": \"123\"\r
+
+    }"
+order: 8000

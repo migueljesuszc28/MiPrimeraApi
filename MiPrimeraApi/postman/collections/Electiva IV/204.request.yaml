@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:5289/api/estudiantes/1
+method: DELETE
+body:
+  type: text
+  content: "{\r
+
+    \  \"id\": 5,\r
+
+    \  \"nombre\": \"María Rodríguez\",\r
+
+    \  \"carrera\": \"Ingeniería de Sistemas\"\r
+
+    }"
+order: 3000

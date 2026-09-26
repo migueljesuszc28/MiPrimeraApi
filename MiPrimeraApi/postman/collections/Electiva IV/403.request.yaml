@@ -1,0 +1,6 @@
+$kind: http-request
+url: http://localhost:5289/api/admin/estudiantes/2
+method: DELETE
+headers:
+  Rol: Estudiante
+order: 6000
