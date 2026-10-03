@@ -1,5 +1,5 @@
-# 1. Imagen base del SDK para compilar
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# 1. SDK de .NET 10 para compilar
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copiar archivos y restaurar dependencias
@@ -10,14 +10,14 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o /app/out
 
-# 2. Imagen base ligera de ejecución (runtime)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# 2. Runtime de .NET 10 para ejecutar
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app/out .
 
-# Configurar el puerto para que Render pueda comunicarse
+# Configurar el puerto para Render
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-# Iniciar la aplicación (reemplaza 'MiProyecto' por el nombre real de tu archivo .csproj)
+# Ejecutar la API
 ENTRYPOINT ["dotnet", "MiPrimeraApi.dll"]
